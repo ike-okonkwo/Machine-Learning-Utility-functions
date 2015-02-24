@@ -1,0 +1,34 @@
+# author : Ike Okonkwo
+# github : ike-okonkwo
+# Feature Importance Utility
+
+import numpy as np
+import collections
+
+def model_feature_importance(model, feature_data_columns_names, top_k = 15):
+    '''
+    (object, object, int) -> (dict)
+    Function return the top k most important features in a model and 
+    how important they are
+    
+    Not all models support this feature
+    '''
+
+    features = np.array(feature_data_columns_names)
+
+    # from the calculated importances, order them from most to least important
+    # Not all models support the feature importance feature
+    try:
+        importances = model.feature_importances_
+    except:
+        print 'model does not support feature importance'
+
+    sorted_idx = np.argsort(importances)
+    best_features = features[sorted_idx][::-1]
+    importance_rank = importances[sorted_idx][::-1]
+    
+    top_features = collections.OrderedDict()
+    for i in range(top_k):
+        top_features[str(best_features[i])] = importance_rank[i]
+
+    return top_features
